@@ -3,9 +3,6 @@ import socket
 from Utilities import hex_str_bytes, int_bytes, print_bytearray
 import binascii
 
-
-######################### CLIENT MESSAGES ############################
-
 class SyncClientConnectionRequest(ClientMessage):
     """
     Object Name (4xN+R bytes): Identifying name of client. Character string, no NULL termination.
