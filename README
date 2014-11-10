@@ -1,7 +1,7 @@
 To Do:
 
 Make import statements and relative paths just work
-Extend S2SimSession and the messages to reflect the new Interoperability Doc
-Write a sample negotiation/forecast client?
-Test test test
+Extend S2SimSession and the messages to reflect the new interoperability doc
+Write a sample negotiation/forecast client? Will need for testing anyway.
+Robustification of S2SimSession connection to timeouts
 Document S2SimSession API in README
