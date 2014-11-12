@@ -1,7 +1,6 @@
 To Do:
 
-o Make import statements and relative paths just work
-   - restructure into standard Python package structure to do relative imports.
+- Change S2SimSession wait_for_server to be private, add wait_for_price() 
 - Extend S2SimSession and the messages to reflect the new interoperability doc
 - Write a sample negotiation/forecast client? Will need for testing anyway.
 - Robustification of S2SimSession connection to timeouts
