@@ -1,10 +1,10 @@
-from .lib import S2SimSession #import S2SimSession
+from s2sim.lib.S2SimSession import S2SimSession #import S2SimSession
 from time import sleep
+from random import randint
 import sys
 
 ADDRESS = 'seelabc.ucsd.edu'
 PORT = 26999
-BUFFER_SIZE = 1024
 
 # Upon first connection, sender id = 0xFFFF. The sender_id to use for subsequent msgs will
 # be scraped from the sender_id field of a successful connection response from the server
@@ -22,7 +22,7 @@ def main():
 	obj_name = "UMICH2" 
 
 	session = S2SimSession(obj_name)
-	session.s2sim_connect()
+	session.s2sim_connect(ADDRESS, PORT)
 
 	try:
 		# This loop comprises the logic for a single S2Sim interval
@@ -40,14 +40,14 @@ def main():
 					exit()
 
 			# Do something with the price signal
-			normal_energy_demand = 3000
-			curtailed_energy_demand = 1000
-			threshold_price = 300
+			normal_energy_demand = 3000 + randint(-20, 20)
+			curtailed_energy_demand = 1000 + randint(-20, 20)
+			threshold_price = 290 + randint(-20, 20)
 			if interval_price > threshold_price:
-				print("Price threshold exceeded. Shedding load.")
-				energy_demand = curtailed_energy_demand
+				print("Price too high. Curtailed load.")
+				energy_demand = curtailed_energy_demand 
 			elif interval_price <= threshold_price:
-				print("Price lowered. Restoring load.")
+				print("Price low. Normal load.")
 				energy_demand = normal_energy_demand
 
 			# Report energy demand

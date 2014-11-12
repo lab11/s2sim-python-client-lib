@@ -1,6 +1,7 @@
+from ClientMessageBaseClass import ClientMessage
+from ..util.Utilities import int_bytes
 import array
 import socket
-from Utilities import hex_str_bytes, int_bytes, print_bytearray
 import binascii
 
 class SyncClientConnectionRequest(ClientMessage):

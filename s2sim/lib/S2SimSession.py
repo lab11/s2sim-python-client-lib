@@ -1,6 +1,12 @@
+from ClientMessages import *
+from ServerMessages import *
+from ServerMessageParser import parseMessage
+
+
 class S2SimSession(object):
 	sender_id = "FFFF" #aka obj_id, not to be confused w/object name
 	obj_name = None
+	s2sim_debug = None
 
 	curr_sys_time = None
 	sim_time_step = None
@@ -8,27 +14,34 @@ class S2SimSession(object):
 
 	sock = None
 
-	def __init__(self, obj_name):
-		self.obj_name = obj_name
+	BUFFER_SIZE = 1024
+	ADDRESS = None
+	PORT = None
 
-	def s2sim_connect(self):
+	def __init__(self, obj_name, debug=False):
+		self.obj_name = obj_name
+		self.s2sim_debug = debug
+
+	def s2sim_connect(self, addr, port):
+		self.ADDRESS = addr
+		self.PORT = port
 		#connected = False
 		#attempts = 0
 		#wait_sec = 5
 		#while not connected:
 			#try:
-				conn_msg = SyncClientConnectionRequest(self.sender_id, self.seq_num+1, self.obj_name)
-				response = self.send_msg(conn_msg)
-				#connected = True
-				if response.__class__.__name__ == "SyncClientConnectionResponse":
-					if response.request_result == 0:
-						self.sender_id = response.client_id
-						self.seq_num = response.seq_num
-					elif response.request_result == 1:
-						print("Object ID not found.")
-						exit()
-				else:
-					print("Problem connecting.")
+		conn_msg = SyncClientConnectionRequest(self.sender_id, self.seq_num+1, self.obj_name)
+		response = self.send_msg(conn_msg)
+		#connected = True
+		if response.__class__.__name__ == "SyncClientConnectionResponse":
+			if response.request_result == 0:
+				self.sender_id = response.client_id
+				self.seq_num = response.seq_num
+			elif response.request_result == 1:
+				print("Object ID not found.")
+				exit()
+		else:
+			print("Problem connecting.")
 			#except:
 			#	attempts += 1
 			#	print("Connection attempts: {0}\nSleeping for {1} seconds before retrying." + str(attempts, wait_sec))
@@ -62,10 +75,10 @@ class S2SimSession(object):
 	def wait_for_server(self):
 		# wait for response
 		self.sock.settimeout(60.0)
-		connResp = self.sock.recv(BUFFER_SIZE)
+		connResp = self.sock.recv(self.BUFFER_SIZE)
 		response = parseMessage(connResp)
 		self.seq_num += 1
-		if s2sim_debug == True:
+		if self.s2sim_debug == True:
 			print("\n")
 			print(response)
 		return response
@@ -82,9 +95,9 @@ class S2SimSession(object):
 	def send_async_msg(self, msg):
 		if self.sock == None:
 			self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-			self.sock.connect((ADDRESS, PORT))
+			self.sock.connect((self.ADDRESS, self.PORT))
 		self.sock.send(msg.to_byte_array())
 		self.seq_num += 1
-		if s2sim_debug == True:
+		if self.s2sim_debug == True:
 			print("\n")
 			print(msg)

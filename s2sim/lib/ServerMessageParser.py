@@ -1,3 +1,6 @@
+from ServerMessageBaseClass import ServerMessage
+from ServerMessages import *
+
 def parseMessage(message):
     parsed_msg = None
     #print_bytearray(message)

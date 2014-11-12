@@ -1,3 +1,5 @@
+from ServerMessageBaseClass import ServerMessage
+
 class SyncClientConnectionResponse(ServerMessage):
     request_result = None
     current_sys_time = None

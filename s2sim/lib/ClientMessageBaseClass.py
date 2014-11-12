@@ -1,3 +1,5 @@
+from ..util.Utilities import hex_str_bytes, int_bytes, print_bytearray
+
 class ClientMessage(object):
     """
     Base class for the rest of the client messages
