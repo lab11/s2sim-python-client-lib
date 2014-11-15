@@ -1,7 +1,37 @@
 To Do:
 
-- Change S2SimSession wait_for_server to be private, add wait_for_price() 
 - Extend S2SimSession and the messages to reflect the new interoperability doc
 - Write a sample negotiation/forecast client? Will need for testing anyway.
 - Robustification of S2SimSession connection to timeouts
-- Document S2SimSession API in README
+
+Python Client API:
+
+# Create a S2Sim session object with an object name (must be obtained from S2Sim maintainers).
+session = S2SimSession(obj_name)
+
+# Connect to the S2Sim server. At this time, address='seelabc.ucsd.edu' and port=26999.
+session.s2sim_connect(address, port)
+
+# Disconnect cleanly from the S2Sim server.
+session.s2sim_disconnect()
+
+# Report your energy demand for the interval.
+session.report_power(power_consumed)
+
+# Get simulation time from S2Sim server.
+session.get_time()
+
+# Get last known price from S2Sim server. May not be final price for the interval.
+session.get_price()
+
+# Send list of projected energy demands in exchange for
+session.send_demand_negotiation(energy_demands)
+
+# Block until the client receives the interval price from the S2Sim server.
+session.wait_for_price()
+
+# Block until client receives message from S2Sim server
+session.receive_from_server()
+
+See S2SimSession.py for implementation details.
+See Interoperability Document version XX for API details. (INCLUDE LINK)
