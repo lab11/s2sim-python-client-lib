@@ -71,8 +71,20 @@ class S2SimSession(object):
 		response = self.send_msg(demand_msg)
 		return response
 
+	def wait_for_price(self):
+		interval_price = None
+		while(interval_price == None):
+			msg = self.receive_from_server()
+			if msg != None:
+				if msg.__class__.__name__ == "SetCurrentPriceMsg":
+					interval_price = msg.price_values[0]
+			else:
+				"Connection closed unexpectedly."
+				exit()
+		return interval_price
+
 	# blocking receive
-	def wait_for_server(self):
+	def receive_from_server(self):
 		# wait for response
 		self.sock.settimeout(60.0)
 		connResp = self.sock.recv(self.BUFFER_SIZE)
@@ -85,12 +97,6 @@ class S2SimSession(object):
 
 	######################## PRIVATE METHODS #############################
 
-	# synchronous send -- send to server and wait for response
-	def send_msg(self, msg):
-		self.send_async_msg(msg)
-		response = self.wait_for_server()
-		return response
-
 	# asynchronous send -- just send to server, no response
 	def send_async_msg(self, msg):
 		if self.sock == None:
@@ -101,3 +107,11 @@ class S2SimSession(object):
 		if self.s2sim_debug == True:
 			print("\n")
 			print(msg)
+
+	# synchronous send -- send to server and wait for response
+	def send_msg(self, msg):
+		self.send_async_msg(msg)
+		response = self.receive_from_server()
+		return response
+
+	

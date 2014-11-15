@@ -1,6 +1,6 @@
 from s2sim.lib.S2SimSession import S2SimSession #import S2SimSession
 from time import sleep
-from random import randint
+from random import gauss
 import sys
 
 ADDRESS = 'seelabc.ucsd.edu'
@@ -29,20 +29,14 @@ def main():
 		while(True):
 
 			# Wait for price signal
-			interval_price = None
-			while(interval_price == None):
-				msg = session.wait_for_server()
-				if msg != None:
-					if msg.__class__.__name__ == "SetCurrentPriceMsg":
-						interval_price = msg.price_values[0]
-				else:
-					"Connection closed unexpectedly."
-					exit()
+			interval_price = session.wait_for_price()
 
 			# Do something with the price signal
-			normal_energy_demand = 3000 + randint(-20, 20)
-			curtailed_energy_demand = 1000 + randint(-20, 20)
-			threshold_price = 290 + randint(-20, 20)
+			mean = 0
+			std_dev = 30
+			normal_energy_demand = 3000 + int(gauss(mean, std_dev))
+			curtailed_energy_demand = 1000 + int(gauss(mean, std_dev))
+			threshold_price = 290 + int(gauss(mean, std_dev))
 			if interval_price > threshold_price:
 				print("Price too high. Curtailed load.")
 				energy_demand = curtailed_energy_demand 
